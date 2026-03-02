@@ -7,7 +7,7 @@ from PIL import Image
 
 
 class DrivingDataset(Dataset):
-    def __init__(self, root_dir="/content/Metarmorphic_Testing_for_RA/data"):
+    def __init__(self, root_dir="/content/Metarmorphic_Testing_for_RA/dataset/data"):
         self.root_dir = root_dir
         self.csv_path = os.path.join(root_dir, "labels.csv")
         self.img_dir = os.path.join(root_dir, "images")
