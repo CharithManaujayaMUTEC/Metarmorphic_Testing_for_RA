@@ -7,7 +7,7 @@ class SteeringRegression(nn.Module):
 
         self.model = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(128 * 128 * 3, 128),
+            nn.Linear(66 * 200 * 3, 128),
             nn.ReLU(),
             nn.Linear(128, 1)
         )
