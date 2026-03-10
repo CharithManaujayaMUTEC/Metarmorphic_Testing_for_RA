@@ -11,13 +11,6 @@ _STD  = [0.229, 0.224, 0.225]
 
 
 def get_train_transform():
-    """
-    Training transforms:
-      Resize → random brightness/contrast jitter → tensor → normalize
-
-    Augmentation keeps the lane geometry intact (no flips here —
-    flipping is a metamorphic test, not a training trick).
-    """
     return transforms.Compose([
         transforms.Resize((66, 200)),
         transforms.ColorJitter(brightness=0.2, contrast=0.2),
@@ -25,9 +18,7 @@ def get_train_transform():
         transforms.Normalize(mean=_MEAN, std=_STD),
     ])
 
-
 def get_eval_transform():
-    """Evaluation / inference transforms (no augmentation)."""
     return transforms.Compose([
         transforms.Resize((66, 200)),
         transforms.ToTensor(),
@@ -36,24 +27,11 @@ def get_eval_transform():
 
 
 def denormalize_image(tensor: torch.Tensor) -> torch.Tensor:
-    """
-    Reverse the per-channel normalisation for visualisation.
-    tensor : (3, H, W)  normalised
-    returns: (3, H, W)  in [0, 1]
-    """
     mean = torch.tensor(_MEAN).view(3, 1, 1)
     std  = torch.tensor(_STD).view(3, 1, 1)
     return torch.clamp(tensor * std + mean, 0.0, 1.0)
 
-
 class CNNDrivingDataset(Dataset):
-    """
-    Dataset for the CNN regression model.
-
-    CSV format  : image,steering
-    Image dir   : <root_dir>/images/
-    Targets     : steering angles (float, already in [-1, 1] from generator)
-    """
 
     def __init__(
         self,
@@ -94,10 +72,7 @@ class CNNDrivingDataset(Dataset):
         return image, torch.tensor([steering], dtype=torch.float32)
 
     def split(self, train_ratio: float = 0.8, seed: int = 42):
-        """
-        Return two Subset objects: (train_dataset, val_dataset).
-        Uses a reproducible random split.
-        """
+
         from torch.utils.data import random_split, Subset
         import numpy as np
 

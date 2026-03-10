@@ -8,13 +8,7 @@ from models.multiple_regression_model import MultipleRegressionModel
 
 
 def load_features_and_labels(data_dir="dataset/data", csv_name="labels.csv"):
-    """
-    Reads labels.csv, extracts features for every image.
 
-    Returns:
-      X : np.array  (n_samples, 6)
-      y : np.array  (n_samples,)
-    """
     csv_path = os.path.join(data_dir, csv_name)
     img_dir  = os.path.join(data_dir, "images")
 
@@ -34,7 +28,6 @@ def load_features_and_labels(data_dir="dataset/data", csv_name="labels.csv"):
     X = np.array(features_list, dtype=np.float32)
     y = np.array(labels_list,   dtype=np.float32)
     return X, y
-
 
 def print_feature_diagnostics(X, y):
     """Print per-feature mean, std and correlation with steering label."""
@@ -61,14 +54,7 @@ def train_regression_model(
     save_path="multiple_regression_model.pkl",
     test_split=0.2,
 ):
-    """
-    Full training pipeline:
-      1. Extract features
-      2. Diagnostics
-      3. Train / test split
-      4. Fit OLS model
-      5. Evaluate & save
-    """
+    
     print("=== Multiple Regression Training Pipeline ===\n")
 
     X, y = load_features_and_labels(data_dir)
@@ -98,7 +84,6 @@ def train_regression_model(
 
     model.save(save_path)
     return model, test_m
-
 
 if __name__ == "__main__":
     train_regression_model()

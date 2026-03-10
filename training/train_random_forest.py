@@ -7,7 +7,6 @@ from tqdm import tqdm
 from dataset.feature_extractor import extract_features
 from models.random_forest_regression_model import RandomForestRegressionModel
 
-
 FEATURE_NAMES = [
     "lane_center_offset",
     "top_offset",
@@ -71,7 +70,6 @@ def convergence_check(X_train, y_train, X_test, y_test,
         print(f"{n:>8} | {tr['r2']:>9.4f} {tst['r2']:>9.4f} "
               f"{oob:>9.4f} {time.time()-t0:>6.1f}s")
     print()
-
 
 # Hyper-parameter grid search 
 

@@ -81,7 +81,6 @@ def _print_np_row(name, preds, y_true):
     r2   = float(1 - ss_r / (ss_t + 1e-8))
     print(f"{name:<32} {mse:>10.6f} {mae:>10.6f} {r2:>8.4f}")
 
-
 def compare_all_models(rf_model, data_dir=DATA_DIR):
     print("\n" + "=" * 66)
     print("           4-MODEL COMPARISON  (Test Split)")

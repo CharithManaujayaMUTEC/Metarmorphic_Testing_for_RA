@@ -2,26 +2,6 @@ import torch
 import torch.nn as nn
 
 class CNNRegressionModel(nn.Module):
-    """
-    CNN Regression Model for steering angle prediction.
-
-    Architecture inspired by NVIDIA's DAVE-2 self-driving CNN (2016),
-    adapted for the 66x200 synthetic driving images used in this project.
-
-    Input  : (batch, 3, 66, 200)  — RGB image
-    Output : (batch, 1)           — predicted steering angle
-
-    Structure:
-      Block 1-5  : Convolutional layers (feature extraction)
-                   Each block = Conv2d → BatchNorm → ReLU → Dropout2d
-      Flatten
-      FC 1-3     : Fully-connected regression head
-                   Each = Linear → ReLU → Dropout
-      Output     : Linear(64 → 1)  — single steering value
-
-    BatchNorm  : stabilises training on small/synthetic datasets
-    Dropout    : reduces overfitting (p=0.2 conv, p=0.3 fc)
-    """
 
     def __init__(self, dropout_conv: float = 0.2, dropout_fc: float = 0.3):
         super().__init__()
@@ -103,12 +83,7 @@ class CNNRegressionModel(nn.Module):
                 nn.init.zeros_(m.bias)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        Args:
-          x : (batch, 3, 66, 200)  — normalised float tensor
-        Returns:
-          (batch, 1)               — predicted steering angle
-        """
+
         features = self.conv_block(x)
         features = features.view(features.size(0), -1)   # flatten
         return self.fc_block(features)

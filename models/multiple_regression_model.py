@@ -3,18 +3,6 @@ import pickle
 import os
 
 class MultipleRegressionModel:
-    """
-    Multiple Linear Regression model for steering angle prediction.
-
-    Uses 4 hand-crafted image features:
-      - mean_brightness
-      - std_brightness
-      - edge_density
-      - lane_center_offset
-
-    Trained with closed-form OLS (Ordinary Least Squares):
-      w = (X^T X)^{-1} X^T y
-    """
 
     def __init__(self):
         self.weights = None   # shape: (n_features + 1,) including bias
@@ -26,13 +14,7 @@ class MultipleRegressionModel:
         return np.hstack([ones, X])
 
     def fit(self, X, y):
-        """
-        Train using Ordinary Least Squares.
-
-        Args:
-          X: np.array of shape (n_samples, n_features)
-          y: np.array of shape (n_samples,)
-        """
+ 
         X_b = self._add_bias(X)
 
         # Closed-form OLS: w = (X^T X)^{-1} X^T y
@@ -46,15 +28,7 @@ class MultipleRegressionModel:
         print(f"Model trained. Weights: {self.weights}")
 
     def predict(self, X):
-        """
-        Predict steering angles.
-
-        Args:
-          X: np.array of shape (n_samples, n_features) or (n_features,)
-
-        Returns:
-          np.array of shape (n_samples,)
-        """
+        
         if not self.is_trained:
             raise RuntimeError("Model is not trained yet. Call fit() first.")
 
@@ -65,12 +39,7 @@ class MultipleRegressionModel:
         return X_b @ self.weights
 
     def evaluate(self, X, y):
-        """
-        Compute MSE and R² score.
-
-        Returns:
-          dict with 'mse' and 'r2'
-        """
+        
         predictions = self.predict(X)
         mse = np.mean((predictions - y) ** 2)
 

@@ -1,13 +1,3 @@
-"""
-End-to-end runner for the CNN Regression model.
-
-Steps:
-  1. Generate synthetic dataset (if not present)
-  2. Train CNNRegressionModel
-  3. Run all 6 metamorphic tests on sample images
-  4. Print side-by-side comparison with the Multiple Regression model (optional)
-"""
-
 import os
 import torch
 from torch.utils.data import DataLoader
@@ -38,13 +28,10 @@ CNN_TESTS = [
 DATA_DIR        = "dataset/data"
 CNN_MODEL_PATH  = "cnn_regression_model.pth"
 
-
 # Metamorphic test runner 
 
 def run_cnn_metamorphic_tests(model, data_dir=DATA_DIR, n_samples=10):
-    """
-    Load n_samples images, run all CNN metamorphic tests, print summary.
-    """
+
     dataset  = CNNDrivingDataset(root_dir=data_dir, mode="eval")
     loader   = DataLoader(dataset, batch_size=1, shuffle=False)
 
@@ -86,10 +73,7 @@ def run_cnn_metamorphic_tests(model, data_dir=DATA_DIR, n_samples=10):
 # Optional: compare CNN vs Multiple Regression 
 
 def compare_models(cnn_model, data_dir=DATA_DIR):
-    """
-    Run CNN and (if available) Multiple Regression on the same val split
-    and print a comparison table.
-    """
+
     from models.multiple_regression_model import MultipleRegressionModel
     from dataset.feature_extractor        import extract_features
     import numpy as np

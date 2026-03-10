@@ -154,6 +154,5 @@ def train_decision_tree_model(
     model.save(save_path)
     return model, test_m
 
-
 if __name__ == "__main__":
     train_decision_tree_model()

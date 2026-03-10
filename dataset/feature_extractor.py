@@ -3,23 +3,7 @@ import cv2
 
 
 def extract_features(image_path):
-    """
-    Extracts 6 discriminative numerical features from a synthetic driving image.
 
-    The synthetic images are black backgrounds with a single white curved lane line.
-    Features are designed specifically around that structure.
-
-    Features:
-      1. lane_center_offset    - normalized horizontal center of the lane line [-1, 1]
-      2. top_offset            - lane position in the top third of image (lookahead)
-      3. bottom_offset         - lane position in the bottom third (current position)
-      4. curvature_proxy       - top_offset minus bottom_offset (direction of curve)
-      5. white_pixel_ratio     - how much of the image is the lane line
-      6. vertical_spread       - std of per-row lane positions (wiggle measure)
-
-    Returns:
-      np.array of shape (6,)  — all values are in range roughly [-1, 1] or [0, 1]
-    """
     img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 
     if img is None:

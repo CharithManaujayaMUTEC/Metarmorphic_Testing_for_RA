@@ -3,7 +3,6 @@ from torch.utils.data import DataLoader
 from dataset.dataset_loader import DrivingDataset
 from models.steering_model import SteeringRegression
 
-
 def train_model(epochs=5):
 
     dataset = DrivingDataset()

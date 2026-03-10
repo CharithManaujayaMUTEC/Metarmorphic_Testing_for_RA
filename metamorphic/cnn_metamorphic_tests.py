@@ -2,21 +2,17 @@ import torch
 import torch.nn.functional as F
 import torchvision.transforms.functional as TF
 
-
 # ImageNet normalisation constants 
 _MEAN = torch.tensor([0.485, 0.456, 0.406]).view(3, 1, 1)
 _STD  = torch.tensor([0.229, 0.224, 0.225]).view(3, 1, 1)
-
 
 def _denorm(t: torch.Tensor) -> torch.Tensor:
     """Normalised tensor → [0, 1] float tensor."""
     return torch.clamp(t * _STD + _MEAN, 0.0, 1.0)
 
-
 def _renorm(t: torch.Tensor) -> torch.Tensor:
     """[0, 1] float tensor → normalised tensor."""
     return (t - _MEAN) / _STD
-
 
 def _infer(model: torch.nn.Module, tensor: torch.Tensor) -> float:
     """Run a single (3,H,W) normalised tensor through the model."""
@@ -27,17 +23,7 @@ def _infer(model: torch.nn.Module, tensor: torch.Tensor) -> float:
 # MR-1  Horizontal Flip  →  steering sign inversion
 
 def cnn_horizontal_flip_test(model, image: torch.Tensor):
-    """
-    MR-1 — Horizontal Flip (Sign Inversion)
-    
-    Property  : Mirroring the scene left-to-right inverts the steering angle.
 
-    Relation  : f(flip(X)) ≈ −f(X)
-
-    Tolerance : adaptive
-      • |steering| > 0.1  →  0.08  (strong curve, tight check)
-      • |steering| ≤ 0.1  →  0.15  (near-straight, looser check)
-    """
     original_pred = _infer(model, image)
     flipped_pred  = _infer(model, TF.hflip(image))
 
@@ -59,17 +45,7 @@ def cnn_horizontal_flip_test(model, image: torch.Tensor):
 
 def cnn_brightness_invariance_test(model, image: torch.Tensor,
                                    brightness_factor: float = 1.4):
-    """
-    MR-2 — Brightness Invariance
-    
-    Property  : Uniform brightness change does not alter lane geometry.
 
-    Fix       : Denormalise before TF.adjust_brightness (needs [0,1]),
-                then renormalise before inference.
-
-    Relation  : |f(X_bright) − f(X)| < tolerance
-    Tolerance : 0.08
-    """
     img_01      = _denorm(image)
     bright_01   = TF.adjust_brightness(img_01, brightness_factor)
     bright_norm = _renorm(bright_01)
@@ -94,15 +70,7 @@ def cnn_brightness_invariance_test(model, image: torch.Tensor,
 
 def cnn_rotation_consistency_test(model, image: torch.Tensor,
                                   angle_deg: float = 5.0):
-    """
-    MR-3 — Small Rotation Consistency
-    
-    Property  : A small camera tilt shifts the prediction by a bounded
-                amount and must not flip sign.
 
-    Relation  : |f(X_rot) − f(X)| < 0.20
-                AND sign(f(X_rot)) == sign(f(X))  (unless |f(X)| < 0.05)
-    """
     rotated_image = TF.rotate(image, angle_deg)
     original_pred = _infer(model, image)
     rotated_pred  = _infer(model, rotated_image)
@@ -128,16 +96,7 @@ def cnn_rotation_consistency_test(model, image: torch.Tensor,
 
 def cnn_blur_invariance_test(model, image: torch.Tensor,
                              kernel_size: int = 5):
-    """
-    MR-4 — Gaussian Blur Invariance
-    
-    Property  : Mild blur preserves lane structure.
 
-    Note      : gaussian_blur is a linear spatial filter — scale invariant —
-                so it works correctly on normalised tensors without denorm.
-
-    Relation  : |f(X_blur) − f(X)| < 0.08
-    """
     blurred_image = TF.gaussian_blur(image, kernel_size=kernel_size, sigma=2.0)
     original_pred = _infer(model, image)
     blurred_pred  = _infer(model, blurred_image)
@@ -159,14 +118,7 @@ def cnn_blur_invariance_test(model, image: torch.Tensor,
 
 def cnn_translation_test(model, image: torch.Tensor,
                          shift_px: int = 10):
-    """
-    MR-5 — Horizontal Translation Consistency
-    
-    Property  : Shifting the image right ≡ vehicle offset left.
-                Steering changes proportionally and stays bounded.
 
-    Relation  : |f(X_shifted) − f(X)| < 0.20
-    """
     _, H, W = image.shape
     padded  = F.pad(image.unsqueeze(0), (shift_px, 0, 0, 0), mode="replicate")
     shifted = padded[:, :, :, :W]
@@ -193,15 +145,7 @@ def cnn_translation_test(model, image: torch.Tensor,
 
 def cnn_contrast_invariance_test(model, image: torch.Tensor,
                                  contrast_factor: float = 1.5):
-    """
-    MR-6 — Contrast Invariance
-    
-    Property  : Higher contrast sharpens lane lines but preserves geometry.
 
-    Fix       : Same denorm → transform → renorm pipeline as MR-2.
-
-    Relation  : |f(X_contrast) − f(X)| < 0.08
-    """
     img_01        = _denorm(image)
     contrast_01   = TF.adjust_contrast(img_01, contrast_factor)
     contrast_norm = _renorm(contrast_01)

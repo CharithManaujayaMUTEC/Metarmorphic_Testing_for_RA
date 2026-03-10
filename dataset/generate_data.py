@@ -4,16 +4,11 @@ import cv2
 import pandas as pd
 from tqdm import tqdm
 
-
 def generate_synthetic_dataset(
     output_dir="dataset/data",
     num_samples=3000,
     image_size=128
 ):
-    """
-    Generates synthetic lane images with steering labels.
-    Saves images + labels.csv inside dataset/data/
-    """
 
     images_path = os.path.join(output_dir, "images")
     os.makedirs(images_path, exist_ok=True)
@@ -42,7 +37,6 @@ def generate_synthetic_dataset(
     df.to_csv(os.path.join(output_dir, "labels.csv"), index=False)
 
     print("✅ Synthetic dataset generated successfully!")
-
 
 if __name__ == "__main__":
     generate_synthetic_dataset()
