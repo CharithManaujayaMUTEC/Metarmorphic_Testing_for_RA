@@ -1,8 +1,12 @@
+import torch
+import torchvision.transforms.functional as TF
+import os
+import numpy as np
+import cv2
+from dataset.feature_extractor import extract_features
 
 # Original CNN test (for the SteeringRegression model) 
 def horizontal_flip_test(model, image, steering):
-    import torch
-    import torchvision.transforms.functional as TF
 
     """Metamorphic test for the CNN SteeringRegression model."""
     flipped_image       = TF.hflip(image)
@@ -14,11 +18,6 @@ def horizontal_flip_test(model, image, steering):
 
 
 # Multiple-Regression metamorphic tests 
-import os
-import numpy as np
-import cv2
-from dataset.feature_extractor import extract_features
-
 
 def _predict_from_path(model, image_path):
     """Helper: extract features from image_path and return scalar prediction."""
