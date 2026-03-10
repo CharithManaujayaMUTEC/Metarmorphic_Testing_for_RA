@@ -9,13 +9,11 @@ def _predict_from_path(model, image_path: str) -> float:
     feats = extract_features(image_path).reshape(1, -1)
     return float(model.predict(feats)[0])
 
-
 def _write_temp(img: np.ndarray, base_path: str, suffix: str) -> str:
     """Save a temp image next to base_path and return the temp path."""
     temp = base_path.replace(".png", f"_{suffix}_tmp.png")
     cv2.imwrite(temp, img)
     return temp
-
 
 def _cleanup(*paths):
     for p in paths:

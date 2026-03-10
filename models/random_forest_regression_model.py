@@ -5,7 +5,6 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from models.decision_tree_regression_model import DecisionTreeRegressionModel
 
-
 class RandomForestRegressionModel:
 
     def __init__(

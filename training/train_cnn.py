@@ -61,16 +61,6 @@ def train_cnn_model(
     patience:      int   = 7,       # early-stopping patience (epochs)
     seed:          int   = 42,
 ):
-    """
-    Full CNN regression training pipeline.
-
-    Steps:
-      1. Load dataset, split train / val
-      2. Build model
-      3. Train with Adam + ReduceLROnPlateau scheduler
-      4. Early stopping on val loss
-      5. Save best checkpoint
-    """
 
     # Reproducibility 
     torch.manual_seed(seed)
@@ -166,7 +156,6 @@ def train_cnn_model(
     print(f"  Best Val R²  : {checkpoint['val_r2']:.4f}")
 
     return model, history
-
 
 if __name__ == "__main__":
     train_cnn_model()
